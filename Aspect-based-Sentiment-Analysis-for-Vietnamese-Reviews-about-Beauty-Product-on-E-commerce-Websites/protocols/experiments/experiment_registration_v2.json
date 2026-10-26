@@ -1,0 +1,339 @@
+{
+  "budget": {
+    "candidates_per_family": 2,
+    "failed_or_timed_out_runs": "report as failed/censored; do not silently raise budget, pick best seed or add candidates",
+    "loss_ablations_in_main_registration": false,
+    "maximum_main_training_runs": 18,
+    "no_automatic_extra_search": true,
+    "seed_runs_per_candidate": 3
+  },
+  "code_base_git_commit": "b61cf0e4c59240b3845b415063aa40c7bf78fb38",
+  "code_state": "Runtime-only amendment to registration v1. Candidate configurations, data/evaluation contract, seeds and selection rules are inherited unchanged. TRAIN-03 is required before any fit.",
+  "data_evaluation_protocol": "absa_data_evaluation_v1",
+  "families": {
+    "bigru_conv1d": {
+      "architecture": {
+        "GRU_layers": 1,
+        "bidirectional_GRU_hidden_per_direction": 128,
+        "conv_variant": "parallel Conv1D on embeddings, 128 channels, kernel=3, stride=1, padding=1, ReLU, masked global max; concatenate with GRU pooling",
+        "dropout": 0.3,
+        "embedding_dim": 128,
+        "embedding_initialization": "random; trainable; padding_idx=0",
+        "heads": "linear 8 aspect logits + 7 x 3 sentiment logits",
+        "pooling": "masked max + masked mean over bidirectional GRU states"
+      },
+      "batch_size": 32,
+      "candidates": [
+        {
+          "encoder": "BiGRU",
+          "id": "BIGRU-01"
+        },
+        {
+          "encoder": "BiGRU+parallelConv1D",
+          "id": "BIGRU-02"
+        }
+      ],
+      "gradient_accumulation": 1,
+      "gradient_clip_norm": 1.0,
+      "loss": {
+        "aspect": "BCEWithLogitsLoss mean over all review x 8 aspect cells",
+        "class_weights": null,
+        "focal_loss": false,
+        "sentiment": "CrossEntropy over gold-present core aspect cells only; sum / number of such cells in batch; zero if none",
+        "total": "aspect_loss + sentiment_loss"
+      },
+      "max_epochs": 20,
+      "optimizer": {
+        "lr": 0.001,
+        "name": "Adam",
+        "weight_decay": 0.0
+      },
+      "patience": 3,
+      "preprocessing": {
+        "add_special_tokens": false,
+        "common": true,
+        "max_length": 128,
+        "padding": "right",
+        "segmentation": {
+          "bridge": "src/VnCoreNLPBatch.java; join segmented sentences by one space; each review independent",
+          "engine": "VnCoreNLP 1.2 wseg-only (RDRSegmenter)",
+          "java_release": "jdk-17.0.21+9",
+          "revision": "62bbc58fe5d113c898eae112656be97dcf50b3a0"
+        },
+        "tokens": "segmented_text.split(); no lowercasing",
+        "truncation": "right",
+        "vocabulary": "train token frequency descending, Unicode lexical ascending ties; PAD=0, UNK=1; max 30000 including specials; min_freq=1"
+      },
+      "scheduler": null,
+      "wallclock_limit_minutes_per_seed": 60
+    },
+    "phobert": {
+      "candidates": [
+        {
+          "id": "PHOBERT-01",
+          "lr": 1e-05
+        },
+        {
+          "id": "PHOBERT-02",
+          "lr": 2e-05
+        }
+      ],
+      "effective_batch_size": 32,
+      "gradient_accumulation": 2,
+      "gradient_clip_norm": 1.0,
+      "heads": {
+        "dropout": 0.1,
+        "output": "linear 8 aspect logits + 7 x 3 sentiment logits"
+      },
+      "initialization": {
+        "fine_tune_all_encoder_layers": true,
+        "model_class": "transformers.RobertaModel",
+        "pooler": "not used",
+        "repo": "vinai/phobert-base",
+        "representation": "last_hidden_state[:,0,:] (BOS/CLS)",
+        "revision": "01daacda68afe13d83023d16ec647239e344a1e6",
+        "weight_download": "only at training launch, never main/latest; pretrained weights have not been downloaded in preflight"
+      },
+      "loss": {
+        "aspect": "BCEWithLogitsLoss mean over all review x 8 aspect cells",
+        "class_weights": null,
+        "focal_loss": false,
+        "sentiment": "CrossEntropy over gold-present core aspect cells only; sum / number of such cells in batch; zero if none",
+        "total": "aspect_loss + sentiment_loss"
+      },
+      "max_epochs": 5,
+      "micro_batch_size": 16,
+      "optimizer": {
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "name": "AdamW",
+        "no_decay": [
+          "bias",
+          "LayerNorm.weight"
+        ],
+        "weight_decay": 0.01
+      },
+      "patience": 2,
+      "preprocessing": {
+        "add_special_tokens": true,
+        "common": true,
+        "length_choice_rule": "128 if train P99<=128 and train truncation@128<=1%; otherwise 256",
+        "max_length": 128,
+        "padding": "dynamic right padding to batch maximum capped at max_length",
+        "segmentation": {
+          "bridge": "src/VnCoreNLPBatch.java; join segmented sentences by one space; each review independent",
+          "engine": "VnCoreNLP 1.2 wseg-only (RDRSegmenter)",
+          "java_release": "jdk-17.0.21+9",
+          "revision": "62bbc58fe5d113c898eae112656be97dcf50b3a0"
+        },
+        "tokenizer": "PhobertTokenizer slow; transformers 4.57.1; use_fast=False",
+        "truncation": "right; add BOS and EOS; preserve EOS when truncating"
+      },
+      "scheduler": "linear warmup for first 10% optimizer steps, then linear decay",
+      "wallclock_limit_minutes_per_seed": 120
+    },
+    "tfidf_logistic": {
+      "candidates": [
+        {
+          "features": "word_1_2",
+          "id": "TFIDF-01"
+        },
+        {
+          "features": "word_1_2_plus_char_3_5",
+          "id": "TFIDF-02"
+        }
+      ],
+      "char_vectorizer": {
+        "analyzer": "char",
+        "dtype": "float32",
+        "max_df": 1.0,
+        "max_features": 30000,
+        "min_df": 2,
+        "ngram_range": [
+          3,
+          5
+        ],
+        "norm": "l2",
+        "sublinear_tf": true
+      },
+      "estimator": {
+        "C": 1.0,
+        "class": "sklearn.linear_model.LogisticRegression",
+        "class_weight": null,
+        "fit_intercept": true,
+        "max_iter": 1000,
+        "multiclass": "OneVsRestClassifier; conditional probabilities normalized over 3 classes",
+        "solver": "liblinear",
+        "tol": 0.0001
+      },
+      "feature_union_weights": [
+        1.0,
+        1.0
+      ],
+      "heads": "8 independent binary aspect classifiers; 7 gold-present sentiment OVR classifiers; shared train-fitted features",
+      "preprocessing": "common NFC/whitespace then vectorizer lowercase=True; no word segmentation",
+      "threads": 1,
+      "wallclock_limit_minutes_per_seed": 30,
+      "word_vectorizer": {
+        "dtype": "float32",
+        "max_df": 1.0,
+        "max_features": 20000,
+        "min_df": 2,
+        "ngram_range": [
+          1,
+          2
+        ],
+        "norm": "l2",
+        "stop_words": null,
+        "sublinear_tf": true,
+        "token_pattern": "(?u)\\b\\w+\\b"
+      }
+    }
+  },
+  "metrics": "unchanged frozen evaluator v1; support ceilings are interpretation only, not a normalized new metric",
+  "model_training_started": false,
+  "original_freeze_lock_sha256": "16e9b76b6a71530d08704cadc2d1ddeddf54ca57615c35f8e650ccc57ac86ee8",
+  "protocol_sha256": "f3145ee7fb9f99c43c273496d656d881f62d8411c9b97257de8ef695c52c25a4",
+  "registered_before_fitting": true,
+  "registration_id": "absa_model_comparison_registration_v2",
+  "registration_version": 2,
+  "runtime": {
+    "determinism": {
+      "BLAS_threads": 1,
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": true,
+      "dataloader_workers": 0,
+      "seed_all": [
+        "PYTHONHASHSEED before process start",
+        "Python random",
+        "NumPy",
+        "torch CPU",
+        "torch CUDA"
+      ],
+      "shuffle": "train only, generator seeded per registered seed",
+      "torch_deterministic_algorithms": true,
+      "torch_threads": 1
+    },
+    "exact_GPU_reproducibility": "must be measured on target hardware; package hashes alone do not guarantee bitwise CUDA determinism",
+    "gate": {
+      "python": "3.15.1",
+      "unicode": "17.0.0"
+    },
+    "modeling": {
+      "environment_gate_status": "PENDING: verify Python, Unicode, all package versions and target GPU before TRAIN-03.",
+      "installed_tokenizer_environment": "reports/modeling_preflight/tokenizer_environment_v1.txt",
+      "package_versions": {
+        "scikit-learn": "1.7.2",
+        "torch": "2.9.0",
+        "transformers": "4.57.1"
+      },
+      "python": "3.13.16",
+      "resolved_environment": "protocols/experiments/modeling_requirements_v1.lock",
+      "runtime_amendment": "V2 pins the current Google Colab CPython patch release; v1 package lock is reused unchanged.",
+      "training_packages_status": "torch/sklearn dependency graph resolved and hash-locked; full GPU runtime not installed or executed in this preflight",
+      "unicode": "15.1.0"
+    },
+    "neural_hardware_required": "single CUDA GPU with >=16 GiB; record GPU/driver/CUDA and actual package versions at launch; CPU is only for diagnostics, not silent replacement of the registered GPU budget",
+    "precision": "float32; AMP off; TF32 off"
+  },
+  "seeds": [
+    42,
+    2026,
+    3407
+  ],
+  "selection": {
+    "aspect_threshold_grid": [
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7
+    ],
+    "candidate_tie_break": "higher mean val joint micro-F1, then lexicographically lower preregistered candidate id",
+    "checkpoint_selection": "after each epoch on val using selected global threshold; best primary, then micro, then earliest epoch",
+    "early_stopping": "patience on no primary improvement; min_delta=0.0; never test-based",
+    "grouped_train_cv": "disabled under frozen v1",
+    "missing_validation_class": "PRICE-negative not individually tunable; no class-specific thresholds or test compensation",
+    "primary": "mean official val joint.macro_f1 across all 3 registered seeds",
+    "sentiment_decoding": "argmax over positive, neutral, negative; ties follow this fixed order",
+    "test": "one final evaluation round per preregistered selected family/checkpoints/all seeds, only after full run manifests; original + frozen diagnostic subsets",
+    "threshold_application": "one global threshold over all 8 aspect probabilities per trained checkpoint; sigmoid for neural; binary probability for LR",
+    "threshold_tie_break": "higher val joint micro-F1; then closest to 0.5; then smaller threshold"
+  },
+  "sensitivity_tracks": "evaluation subsets already frozen; training-without-NAN and weighting/focal require a separate preregistered extension before fitting",
+  "source_train_sha256": "19449cceea317269304464ef7c6c72d5dc70548c6006686d1506e1880bfb9976",
+  "supersedes_registration_id": "absa_model_comparison_registration_v1",
+  "target_order": {
+    "aspect_detection_labels": [
+      "stayingpower",
+      "texture",
+      "smell",
+      "price",
+      "others",
+      "colour",
+      "shipping",
+      "packing"
+    ],
+    "blank": "aspect not annotated; never neutral",
+    "core_aspects": [
+      "stayingpower",
+      "texture",
+      "smell",
+      "price",
+      "colour",
+      "shipping",
+      "packing"
+    ],
+    "joint_core_labels": [
+      "stayingpower:positive",
+      "stayingpower:neutral",
+      "stayingpower:negative",
+      "texture:positive",
+      "texture:neutral",
+      "texture:negative",
+      "smell:positive",
+      "smell:neutral",
+      "smell:negative",
+      "price:positive",
+      "price:neutral",
+      "price:negative",
+      "colour:positive",
+      "colour:neutral",
+      "colour:negative",
+      "shipping:positive",
+      "shipping:neutral",
+      "shipping:negative",
+      "packing:positive",
+      "packing:neutral",
+      "packing:negative"
+    ],
+    "joint_decoding": "predicted aspect gate plus exactly one conditional sentiment per present core aspect; no OTHERS joint pair",
+    "label_normalization": "strict identity; reject noncanonical spelling/case/whitespace",
+    "others_mutually_exclusive_with_core": false,
+    "sentiments": [
+      "positive",
+      "neutral",
+      "negative"
+    ]
+  },
+  "text_policy": {
+    "audit_keys_as_features": false,
+    "common": "src/modeling_preflight.py::prepare_text: NFC + collapse Unicode whitespace; retain case, accents, punctuation, emoji and negation",
+    "fit_statistics_split": "official train only",
+    "no_global_cleaning": true,
+    "original_NAN_rows_retained": true,
+    "row_ids_as_features": false
+  },
+  "tokenizer_audit_sha256": "4ce749c59ae587bdf6a44de8d0a28a0b1c972a5cfbc572b99f75a2f4c7d80155",
+  "training_launch_gates": [
+    "frozen data exact-runtime gate v1 PASS; registered modeling runtime v2 (Python 3.13.16 / Unicode 15.1.0) PASS",
+    "registered asset/package/source hashes match",
+    "new trainer implementation and exact code/dirty hash recorded",
+    "target hardware and training dependencies verified",
+    "save run manifest before fit"
+  ]
+}

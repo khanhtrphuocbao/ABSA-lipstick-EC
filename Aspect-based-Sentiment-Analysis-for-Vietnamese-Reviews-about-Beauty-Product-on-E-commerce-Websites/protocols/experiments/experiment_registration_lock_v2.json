@@ -1,0 +1,32 @@
+{
+  "artifacts": {
+    "protocols/experiments/experiment_registration_lock_v1.json": "7279166cb41c3676e835e27bfd3bc53e9330889145fc73a4e91b96fea16a83e4",
+    "protocols/experiments/experiment_registration_v1.json": "c49ea8ebf43928e67ef06e1f792fe792198328d70d4dd4b0bbfa11898f189a0d",
+    "protocols/experiments/experiment_registration_v2.json": "bfba4cccf1c26b2f5941bd91627cdde9ce36add383af11d0f8aa9c590506c818",
+    "protocols/experiments/modeling_requirements_v1.in": "26bb228e47cdd2b932d4c958667b35b906eaedae63bde535a6391eb955629c33",
+    "protocols/experiments/modeling_requirements_v1.lock": "f3e6b400d66fa83aa0bbf50506ba3c3a6122641e081059ec3fbb7caac175639b",
+    "reports/experiments/macro_f1_ceiling_v1.json": "495e1e15d079fe7d65938f7e767fa5399fcbe90dca4284bbccad3601853ca191",
+    "reports/experiments/reporting_guidance_v1.md": "a38d7b014c0bf5f3d624d14da4faa4ba821c31a6f145152d4aa860e0918c8924",
+    "reports/experiments/runtime_registration_v2.md": "bd74594ce42a523578c33ba8fcbcda49c9d33567dbbfa88128c14693adf84047",
+    "reports/modeling_preflight/assets_v1.json": "275993501ba4562ac39544b4d854f32581bf784a6f3f103eaf9ab38ff0b7b66b",
+    "reports/modeling_preflight/phobert_tokenizer_audit_v1.json": "4ce749c59ae587bdf6a44de8d0a28a0b1c972a5cfbc572b99f75a2f4c7d80155",
+    "reports/modeling_preflight/tokenizer_environment_v1.txt": "6569ff3147dddfd4b905bda8ab605ff658e65a710a77883aa9d69a52a5712563",
+    "reports/modeling_preflight/tokenizer_outputs_v1.json": "5f818934457194710406c749fdc7057a67d0182f44d2905fca79711b558bc1b0",
+    "reports/modeling_preflight/train_tokenization_v1.jsonl": "a46f285e5c304955d4d95ed4151c3167b102da7b8c65b08ae13f4409f80592e8",
+    "src/VnCoreNLPBatch.java": "b2814b0848994fff7a087896950878b0e5169483de0b724b2df8f0f173038521",
+    "src/modeling_preflight.py": "d6a4a2b3565f5caef0551d85dafa0676f54261961a2f2328fa26aad111697c3f",
+    "src/register_experiments.py": "76925ae99b5a3ea29c8cf70f15e755f6ca914b29e6a87b43ce9a9226433ee3eb",
+    "src/reproducibility_gate.py": "9f0392b95078650a65a745238955daea1b45d7c907a2446b3b5c39821a90c2bf",
+    "src/restore_model_assets.py": "cfd12cadcde4c2a89fd3e89fa606e98986c839449da3c29af4c3dcb70cf638cf",
+    "tests/test_modeling_preflight.py": "352a8ff5fa2b29b31b950e9ac3432f85ae52c390a3bcf4bb04d3e52474b26f96"
+  },
+  "base_registration_sha256": "c49ea8ebf43928e67ef06e1f792fe792198328d70d4dd4b0bbfa11898f189a0d",
+  "original_freeze_lock_sha256": "16e9b76b6a71530d08704cadc2d1ddeddf54ca57615c35f8e650ccc57ac86ee8",
+  "registration_id": "absa_model_comparison_registration_v2",
+  "runtime_change": {
+    "python": "3.13.16",
+    "unicode": "15.1.0"
+  },
+  "supersedes_registration_id": "absa_model_comparison_registration_v1",
+  "training_started": false
+}
