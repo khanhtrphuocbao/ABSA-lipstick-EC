@@ -17,7 +17,7 @@ The Java adapter accepts the registered `jdk-17.0.21+9` runtime from `JAVA_HOME`
 
 ## Colab workflow
 
-First pin Cell 2 to the commit containing this implementation. Run the existing integrity and runtime cells, then stage the registered tokenizer/segmenter assets and all four frozen CSVs. The Java 17.0.21+9 executable must be installed in the runtime. Choose an artifact root on Drive if durable storage is needed.
+Cell 2 is pinned to the runner commit. Run the integrity and runtime cells, then stage all four frozen CSVs. Use `/content/absa-runs` as the active artifact root and copy completed run directories to Drive as backups. The write-once implementation uses hard links; support for that operation on Colab's mounted Drive has not been verified. Before continuing in a new Colab runtime, copy archived run directories back to the same `/content/absa-runs` path so their recorded absolute paths still resolve. Resume is not supported. The Java 17.0.21+9 executable must be installed in the runtime for neural candidates.
 
 For neural candidates, restore only the registered tokenizer/segmenter files with `python -m src.training.restore_runtime_assets --assets /content/absa-assets`. The command checks each pinned SHA-256, refuses to overwrite mismatches, and does not fetch PhoBERT weights or a JDK. Install/select the exact registered Java runtime separately. The `--assets-dir` argument is required on **each** `validate`, `authorize`, and `run` command for BiGRU/PhoBERT; TF-IDF does not require it.
 
@@ -26,20 +26,20 @@ Prepare and validate one run. Repeat with a unique run ID for every candidate/se
 ```bash
 python -m src.training.run_manifest prepare \
   --candidate TFIDF-01 --seed 42 --run-id TFIDF-01-seed-42 \
-  --artifact-root /content/drive/MyDrive/absa-runs \
-  --data-dir /content/absa-data
+  --artifact-root /content/absa-runs \
+  --data-dir /content/drive/MyDrive/absa-data
 
 python -m src.training.run_manifest validate \
-  --manifest /content/drive/MyDrive/absa-runs/TFIDF-01-seed-42/run_manifest.json \
-  --data-dir /content/absa-data
+  --manifest /content/absa-runs/TFIDF-01-seed-42/run_manifest.json \
+  --data-dir /content/drive/MyDrive/absa-data
 ```
 
 After a validation PASS, write the separate authorization. This command still does not fit:
 
 ```bash
 python -m src.training.run_manifest authorize \
-  --manifest /content/drive/MyDrive/absa-runs/TFIDF-01-seed-42/run_manifest.json \
-  --confirm-run-id TFIDF-01-seed-42 --data-dir /content/absa-data
+  --manifest /content/absa-runs/TFIDF-01-seed-42/run_manifest.json \
+  --confirm-run-id TFIDF-01-seed-42 --data-dir /content/drive/MyDrive/absa-data
 ```
 
 The actual fit occurs only when the distinct TRAIN-04 command below is deliberately invoked in a fresh process. The environment variables must be present before Python starts:
@@ -47,18 +47,31 @@ The actual fit occurs only when the distinct TRAIN-04 command below is deliberat
 ```bash
 PYTHONHASHSEED=42 CUBLAS_WORKSPACE_CONFIG=:4096:8 \
 python -m src.training.registered_run run \
-  --manifest /content/drive/MyDrive/absa-runs/TFIDF-01-seed-42/run_manifest.json \
-  --run-id TFIDF-01-seed-42 --data-dir /content/absa-data
+  --manifest /content/absa-runs/TFIDF-01-seed-42/run_manifest.json \
+  --run-id TFIDF-01-seed-42 --data-dir /content/drive/MyDrive/absa-data
 ```
 
 For BiGRU and PhoBERT, add `--assets-dir /content/absa-assets` to both validation and authorization, then pass it to the run command; the neural gate also requires one CUDA GPU with at least 16 GiB VRAM. PhoBERT's exact pretrained revision is loaded only after all gates pass.
+
+After a run completes, back up its immutable directory to Drive:
+
+```python
+from pathlib import Path
+import shutil
+
+run_id = 'TFIDF-01-seed-42'
+shutil.copytree(Path('/content/absa-runs') / run_id,
+                Path('/content/drive/MyDrive/absa-runs') / run_id)
+```
+
+In a fresh runtime, restore every backed-up run directory to `/content/absa-runs` before preparing another run or aggregating. Copy each folder without changing its contents; the registered aggregator verifies the checkpoint and manifest hashes.
 
 After all six candidate/seed runs in a family are complete, summarize selection on validation:
 
 ```bash
 python -m src.training.registered_run aggregate \
   --family tfidf_logistic \
-  --artifact-root /content/drive/MyDrive/absa-runs
+  --artifact-root /content/absa-runs
 ```
 
 There is no Run All hook, no command that automatically launches all 18 runs, and no test-evaluation command in TRAIN-04. Each of the maximum 18 registered candidate/seed runs needs its own manifest, validation, authorization, and explicit `run` invocation.
