@@ -60,3 +60,6 @@ docs/_build/
 target/
 
 .idea/
+
+# Run manifests, checkpoints, and validation artifacts are write-once outputs.
+artifacts/runs/

@@ -164,14 +164,20 @@ def make_phobert_loader(rows, segmented_texts, tokenizer, batch_size, seed, shuf
                                        collate_fn=collate)
 
 
-def fit_tfidf_validation(train_rows, validation_rows, candidate_id):
+def fit_tfidf_validation(train_rows, validation_rows, candidate_id, seed=None,
+                         progress_callback=None):
     """Fit one registered lexical candidate on train and select its threshold on val."""
     from .decoding import decode_probabilities, select_global_threshold
     if not train_rows or any(row.get('source_split', 'train') != 'train' for row in train_rows):
         raise ValueError('TF-IDF fitting input must be official train rows only')
     if not validation_rows or any(row.get('source_split') != 'val' for row in validation_rows):
         raise ValueError('Threshold selection input must be official validation rows only')
-    model = TfidfLogisticABSA(candidate_id).fit(train_rows)
+    if seed is not None:
+        from .reproducibility import REGISTERED_SEEDS
+        if seed not in REGISTERED_SEEDS:
+            raise ValueError('TF-IDF seed is not registered')
+    model = TfidfLogisticABSA(candidate_id, random_state=seed).fit(train_rows,
+                                                                  progress_callback=progress_callback)
     aspect, conditional = model.predict_probabilities([row['data'] for row in validation_rows])
     selected = select_global_threshold(validation_rows, aspect, conditional, 'val')
     predictions = [decode_probabilities(aspect[i], conditional[i], selected['threshold'], 'val',
@@ -257,8 +263,9 @@ def build_neural_optimizer(model, candidate_id, total_optimizer_steps):
 
 
 def fit_neural_candidate(model, train_batches, validation_batches, optimizer, scheduler,
-                         candidate_id, seed, checkpoint_dir, metadata, device='cuda'):
-    """Future guarded fit loop; rejects CPU and non-validation checkpoint selection."""
+                         candidate_id, seed, checkpoint_dir, metadata, device='cuda',
+                         on_epoch_end=None):
+    """Registered guarded fit loop; rejects CPU and non-validation checkpoint selection."""
     import numpy as np
     import torch
     try:
@@ -338,6 +345,8 @@ def fit_neural_candidate(model, train_batches, validation_batches, optimizer, sc
         history.append({'epoch': epoch, 'train': train_metrics,
                         'val_joint_macro_f1': primary, 'val_joint_micro_f1': micro,
                         'threshold': threshold})
+        if on_epoch_end is not None:
+            on_epoch_end(dict(history[-1]))
         primary_improved = best is None or primary > best['macro']
         no_primary_improvement = 0 if primary_improved else no_primary_improvement + 1
         better_checkpoint = best is None or (primary, micro, -epoch) > (best['macro'], best['micro'], -best['epoch'])

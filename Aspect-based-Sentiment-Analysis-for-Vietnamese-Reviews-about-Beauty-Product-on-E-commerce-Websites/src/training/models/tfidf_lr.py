@@ -11,10 +11,11 @@ except ImportError:
 
 
 class TfidfLogisticABSA:
-    def __init__(self, candidate_id, root=None):
+    def __init__(self, candidate_id, root=None, random_state=None):
         if candidate_id not in ('TFIDF-01', 'TFIDF-02'):
             raise ValueError('Unknown registered TF-IDF candidate')
         self.candidate_id = candidate_id
+        self.random_state = random_state
         self.root = Path(root) if root else Path(__file__).resolve().parents[3]
         registration = json.loads((self.root / 'protocols/experiments/experiment_registration_v1.json').read_text())
         self.config = registration['families']['tfidf_logistic']
@@ -49,9 +50,10 @@ class TfidfLogisticABSA:
         config = self.config['estimator']
         return LogisticRegression(C=config['C'], solver=config['solver'], max_iter=config['max_iter'],
                                   tol=config['tol'], class_weight=config['class_weight'],
-                                  fit_intercept=config['fit_intercept'], n_jobs=1, random_state=None)
+                                  fit_intercept=config['fit_intercept'], n_jobs=1,
+                                  random_state=self.random_state)
 
-    def fit(self, rows):
+    def fit(self, rows, progress_callback=None):
         import numpy as np
         from sklearn.multiclass import OneVsRestClassifier
         if not rows:
@@ -61,6 +63,8 @@ class TfidfLogisticABSA:
         texts = prepare_texts([row['data'] for row in rows])
         self.vectorizer = self._make_vectorizer()
         matrix = self.vectorizer.fit_transform(texts)
+        if progress_callback is not None:
+            progress_callback({'phase': 'vectorizer_fitted', 'rows': len(rows), 'features': matrix.shape[1]})
         if matrix.shape[0] != len(rows) or matrix.shape[1] == 0:
             raise ValueError('Fitted TF-IDF matrix has incompatible dimensions')
         self.feature_count_ = matrix.shape[1]
@@ -74,6 +78,8 @@ class TfidfLogisticABSA:
             if head.n_features_in_ != self.feature_count_:
                 raise ValueError('Aspect head feature dimension mismatch')
             self.aspect_heads.append(head)
+            if progress_callback is not None:
+                progress_callback({'phase': 'aspect_head_fitted', 'aspect': aspect})
         self.sentiment_heads = []
         for aspect in CORE_ASPECTS:
             examples = [row for row in rows if row[aspect]]
@@ -88,6 +94,8 @@ class TfidfLogisticABSA:
                                         for estimator in head.estimators_):
                 raise ValueError('Conditional head feature dimension mismatch')
             self.sentiment_heads.append(head)
+            if progress_callback is not None:
+                progress_callback({'phase': 'sentiment_head_fitted', 'aspect': aspect})
         self.sentiment_class_order = SENTIMENTS
         self.fitted = True
         return self

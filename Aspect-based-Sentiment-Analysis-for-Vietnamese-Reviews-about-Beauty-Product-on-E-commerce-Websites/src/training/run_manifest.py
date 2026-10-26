@@ -91,7 +91,7 @@ def _manifest_code_sha256(root: Path):
     return digest.hexdigest(), names
 
 
-def _artifact_integrity(root: Path):
+def _artifact_integrity(root: Path, data_dir=None):
     registration_lock = _json(root, V2_LOCK)
     artifacts = {}
     for relative, expected in sorted(registration_lock['artifacts'].items()):
@@ -110,18 +110,18 @@ def _artifact_integrity(root: Path):
         'registration_lock_v1_sha256': _sha256(root / V1_LOCK),
         'registration_lock_v2_sha256': _sha256(root / V2_LOCK),
         'exact_runtime_gate_receipt_sha256': _sha256(root / 'reports/modeling_preflight/reproducibility_gate_v1.json'),
-        'dataset_sha256': _dataset_hashes(root, protocol_path),
+        'dataset_sha256': _dataset_hashes(root, protocol_path, data_dir),
     }
 
 
-def _dataset_hashes(root: Path, protocol_path: Path):
+def _dataset_hashes(root: Path, protocol_path: Path, data_dir=None):
     # The frozen evaluation protocol is JSON-compatible YAML. Hash bytes only;
     # never parse rows here or expose test labels to training code.
     protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
     expected = protocol['source_files']
     result = {}
     for split, item in expected.items():
-        path = root / item['path']
+        path = (Path(data_dir) / Path(item['path']).name) if data_dir else root / item['path']
         result[split] = {'path': item['path'], 'expected_sha256': item['sha256'],
                          'observed_sha256': _sha256(path) if path.is_file() else None}
     return result
@@ -135,7 +135,7 @@ def _find_candidate(registration, candidate_id):
     raise ValueError(f'{candidate_id!r} is not a registered candidate')
 
 
-def build_run_manifest(root, candidate_id, seed, run_id, artifact_root='artifacts/runs'):
+def build_run_manifest(root, candidate_id, seed, run_id, artifact_root='artifacts/runs', data_dir=None):
     """Build a PREPARED manifest. It has no authorization and cannot start fit."""
     root = Path(root).resolve()
     registration = _json(root, V2_REGISTRATION)
@@ -149,7 +149,8 @@ def build_run_manifest(root, candidate_id, seed, run_id, artifact_root='artifact
     artifact_root_value = str(artifact_root if artifact_root.is_absolute()
                               else artifact_root.as_posix())
     run_directory = str(artifact_root / run_id)
-    integrity = _artifact_integrity(root)
+    dataset_directory = Path(data_dir).expanduser().resolve() if data_dir else root / 'data'
+    integrity = _artifact_integrity(root, dataset_directory)
     registration_lock = _json(root, V2_LOCK)
     freeze_lock = _json(root, FREEZE_LOCK)
     gate_receipt = _json(root, 'reports/modeling_preflight/reproducibility_gate_v1.json')
@@ -188,9 +189,11 @@ def build_run_manifest(root, candidate_id, seed, run_id, artifact_root='artifact
                     'exact_data_gate_receipt_sha256': _sha256(root / 'reports/modeling_preflight/reproducibility_gate_v1.json')},
         'assets': {'required': family != 'tfidf_logistic',
                    'phobert_revision': registration['families']['phobert']['initialization']['revision'],
-                   'vncorenlp_revision': registration['families']['phobert']['preprocessing']['segmentation']['revision']},
+                   'vncorenlp_revision': registration['families']['phobert']['preprocessing']['segmentation']['revision'],
+                   'java_release': registration['families']['bigru_conv1d']['preprocessing']['segmentation']['java_release']},
         'data_policy': {'fit_splits': ['train'], 'selection_split': 'val',
-                        'test_used_for_selection': False, 'dataset_hashes_are_byte_only': True},
+                        'test_used_for_selection': False, 'dataset_hashes_are_byte_only': True,
+                        'dataset_directory': str(dataset_directory)},
         'evaluation_policy': {'primary_metric': selection['primary'],
                               'checkpoint_selection': selection['checkpoint_selection'],
                               'threshold_grid': selection['aspect_threshold_grid'],
@@ -269,6 +272,8 @@ def validate_run_manifest(manifest, observed):
             blockers.append('PhoBERT asset revision differs from the registered revision')
         if assets.get('vncorenlp_revision') != manifest['assets'].get('vncorenlp_revision'):
             blockers.append('VnCoreNLP asset revision differs from the registered revision')
+        if assets.get('java_release') != manifest['assets'].get('java_release'):
+            blockers.append('Java runtime release differs from the registered release')
     if manifest.get('family') != 'tfidf_logistic':
         hardware = observed.get('hardware', {})
         if not hardware.get('cuda_available') or not hardware.get('gpu_name'):
@@ -352,21 +357,25 @@ def _registered_run_inventory(root: Path, current_manifest):
             'maximum': maximum, 'conflicts': conflicts}
 
 
-def collect_observation(root, manifest, assets_dir=None):
+def collect_observation(root, manifest, assets_dir=None, data_dir=None):
     root = Path(root).resolve()
+    selected_data_dir = (Path(data_dir).expanduser().resolve() if data_dir else
+                         Path(manifest.get('data_policy', {}).get('dataset_directory', root / 'data')))
     asset_status = {'status': 'NOT_REQUIRED', 'checked_files': []}
     if manifest['assets']['required']:
         if assets_dir is None:
             asset_status = {'status': 'BLOCKED', 'checked_files': []}
         else:
             try:
-                report = verify_assets(assets_dir, root)
+                report = verify_assets(assets_dir, root, require_java_archive=False)
                 asset_status = {'status': 'PASS', 'checked_files': report['checked_files'],
                                 'phobert_revision': report['phobert_revision'],
-                                'vncorenlp_revision': report['vncorenlp_revision']}
+                                'vncorenlp_revision': report['vncorenlp_revision'],
+                                'java_release': report['java_release'],
+                                'java_sha256': report['java_sha256']}
             except (OSError, ValueError) as exc:
                 asset_status = {'status': 'BLOCKED', 'checked_files': [], 'reason': str(exc)}
-    integrity = _artifact_integrity(root)
+    integrity = _artifact_integrity(root, selected_data_dir)
     registration_data = _json(root, V2_REGISTRATION)
     candidate_map = {}
     for family, family_config in registration_data['families'].items():
@@ -405,21 +414,26 @@ def _cli():
     prepare.add_argument('--seed', type=int, required=True)
     prepare.add_argument('--run-id', required=True)
     prepare.add_argument('--artifact-root', default='artifacts/runs')
+    prepare.add_argument('--data-dir', help='directory holding all four byte-identical frozen CSVs')
     validate = subparsers.add_parser('validate', help='check manifest gates without fitting')
     validate.add_argument('--manifest', required=True)
     validate.add_argument('--assets-dir')
+    validate.add_argument('--data-dir')
     authorize = subparsers.add_parser('authorize', help='record a separate explicit gate authorization')
     authorize.add_argument('--manifest', required=True)
     authorize.add_argument('--confirm-run-id', required=True)
     authorize.add_argument('--assets-dir')
-    launch = subparsers.add_parser('launch-check', help='verify launch gate only; TRAIN-04 fitter is absent')
+    authorize.add_argument('--data-dir')
+    launch = subparsers.add_parser('launch-check', help='verify the gate only; this command never fits')
     launch.add_argument('--manifest', required=True)
     launch.add_argument('--run-id', required=True)
     launch.add_argument('--assets-dir')
+    launch.add_argument('--data-dir')
     args = parser.parse_args()
     root = Path(args.root).resolve()
     if args.command == 'prepare':
-        manifest = build_run_manifest(root, args.candidate, args.seed, args.run_id, args.artifact_root)
+        manifest = build_run_manifest(root, args.candidate, args.seed, args.run_id,
+                                      args.artifact_root, args.data_dir)
         output = (Path(manifest['checkpoint_policy']['run_directory']) / 'run_manifest.json')
         if not output.is_absolute():
             output = root / output
@@ -429,7 +443,8 @@ def _cli():
         return 0
     manifest_path = Path(args.manifest).resolve()
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
-    observation = collect_observation(root, manifest, getattr(args, 'assets_dir', None))
+    observation = collect_observation(root, manifest, getattr(args, 'assets_dir', None),
+                                      getattr(args, 'data_dir', None))
     report = validate_run_manifest(manifest, observation)
     if args.command == 'validate':
         report['validated_utc'] = datetime.now(timezone.utc).isoformat()
@@ -446,12 +461,12 @@ def _cli():
             raise SystemExit('--confirm-run-id must exactly match the manifest run_id')
         payload = {'run_id': manifest['run_id'], 'manifest_sha256': _sha256(manifest_path),
                    'authorized_utc': datetime.now(timezone.utc).isoformat(),
-                   'authorization_scope': 'TRAIN-03 gate only; no training process is launched'}
+                   'authorization_scope': 'one registered candidate/seed; a separate explicit TRAIN-04 run command is required'}
         _write_once(manifest_path.parent / 'run_authorization.json', _canonical_bytes(payload))
         print(json.dumps({'status': 'AUTHORIZED_FOR_FUTURE_TRAIN04_ONLY', 'fit_started': False}, indent=2))
         return 0
     verify_authorization(manifest_path, args.run_id)
-    print('Gate PASS; TRAIN-04 fit entrypoint is intentionally not implemented. No training started.')
+    print('Gate PASS; this check did not start training. Use the separate TRAIN-04 run command only when intended.')
     return 3
 
 

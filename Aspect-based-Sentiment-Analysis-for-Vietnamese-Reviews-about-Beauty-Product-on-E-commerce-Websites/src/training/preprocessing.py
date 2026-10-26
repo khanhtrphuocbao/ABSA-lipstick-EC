@@ -19,11 +19,10 @@ def prepare_texts(texts):
 def segment_vietnamese(texts, assets_dir, repo_root=None):
     """Run the pinned VnCoreNLP bridge, framing each review independently."""
     from . import assets
-    receipt = assets.load_asset_receipt(repo_root)
     root = Path(repo_root) if repo_root else Path(__file__).resolve().parents[2]
     assets_dir = Path(assets_dir)
-    assets.verify_assets(assets_dir, root)
-    java = assets_dir / receipt['java']['java_relative_path']
+    asset_report = assets.verify_assets(assets_dir, root, require_java_archive=False)
+    java = Path(asset_report['java_executable'])
     jar = assets_dir / 'vncorenlp/VnCoreNLP-1.2.jar'
     bridge = root / 'src/VnCoreNLPBatch.java'
     if not java.is_file() or not jar.is_file() or not bridge.is_file():
@@ -58,7 +57,7 @@ def load_phobert_tokenizer(assets_dir):
     except ImportError as exc:
         raise ImportError('PhoBERT tokenization requires transformers==4.57.1 from the registered lock') from exc
     from .assets import verify_assets
-    verify_assets(assets_dir)
+    verify_assets(assets_dir, require_java_archive=False)
     return AutoTokenizer.from_pretrained(Path(assets_dir) / 'phobert', use_fast=False,
                                          local_files_only=True)
 
