@@ -1,0 +1,60 @@
+{
+  "phobert": {
+    "repo": "vinai/phobert-base",
+    "revision": "01daacda68afe13d83023d16ec647239e344a1e6",
+    "files": [
+      {
+        "url": "https://huggingface.co/vinai/phobert-base/resolve/01daacda68afe13d83023d16ec647239e344a1e6/config.json",
+        "relative_path": "phobert/config.json",
+        "sha256": "71df79a67a65b1ee472938d0dff77297c0d77e20fef1af41e0013b1d384efb0d",
+        "bytes": 557
+      },
+      {
+        "url": "https://huggingface.co/vinai/phobert-base/resolve/01daacda68afe13d83023d16ec647239e344a1e6/vocab.txt",
+        "relative_path": "phobert/vocab.txt",
+        "sha256": "dffd7543c401fb6567253ae7c3313004532c33d062525250049c616544bad777",
+        "bytes": 895321
+      },
+      {
+        "url": "https://huggingface.co/vinai/phobert-base/resolve/01daacda68afe13d83023d16ec647239e344a1e6/bpe.codes",
+        "relative_path": "phobert/bpe.codes",
+        "sha256": "9dfe53fb8abbddd3387da99641c36e00bee757a3679aad9cf0a7cdc4b30f6ef8",
+        "bytes": 1135173
+      }
+    ]
+  },
+  "vncorenlp": {
+    "repo": "vncorenlp/VnCoreNLP",
+    "revision": "62bbc58fe5d113c898eae112656be97dcf50b3a0",
+    "files": [
+      {
+        "url": "https://raw.githubusercontent.com/vncorenlp/VnCoreNLP/62bbc58fe5d113c898eae112656be97dcf50b3a0/VnCoreNLP-1.2.jar",
+        "relative_path": "vncorenlp/VnCoreNLP-1.2.jar",
+        "sha256": "9e2811cdbc2ddfc71d04be5dc36e185c88dcd1ad4d5d69e4ff2e1369dccf7793",
+        "bytes": 27412703
+      },
+      {
+        "url": "https://raw.githubusercontent.com/vncorenlp/VnCoreNLP/62bbc58fe5d113c898eae112656be97dcf50b3a0/models/wordsegmenter/vi-vocab",
+        "relative_path": "vncorenlp/models/wordsegmenter/vi-vocab",
+        "sha256": "0a47c5b55bbce163029d37730a67b9479740388695c29c106c112b815613eaa5",
+        "bytes": 526544
+      },
+      {
+        "url": "https://raw.githubusercontent.com/vncorenlp/VnCoreNLP/62bbc58fe5d113c898eae112656be97dcf50b3a0/models/wordsegmenter/wordsegmenter.rdr",
+        "relative_path": "vncorenlp/models/wordsegmenter/wordsegmenter.rdr",
+        "sha256": "9e62f96bd93e37a24f364238e8d8ae986fa5dad6dbc9f4eae622ab3651b7fa06",
+        "bytes": 128508
+      }
+    ]
+  },
+  "java": {
+    "release": "jdk-17.0.21+9",
+    "file": {
+      "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.21%2B9/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.21_9.tar.gz",
+      "relative_path": "jdk.tar.gz",
+      "sha256": "78b08c7f5a0598242d5719c022e19479cb4a3aa45c37c19726a757a469ed1c15",
+      "bytes": 186192554
+    },
+    "java_relative_path": "jdk/jdk-17.0.21+9/Contents/Home/bin/java"
+  }
+}

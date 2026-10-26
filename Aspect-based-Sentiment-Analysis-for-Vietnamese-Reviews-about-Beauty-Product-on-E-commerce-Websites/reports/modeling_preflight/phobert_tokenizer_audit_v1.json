@@ -1,0 +1,269 @@
+{
+  "assets_receipt_sha256": "275993501ba4562ac39544b4d854f32581bf784a6f3f103eaf9ab38ff0b7b66b",
+  "empty_segmented_train_reviews": 0,
+  "gate_runtime": {
+    "python": "3.15.1",
+    "unicode": "17.0.0"
+  },
+  "is_fast": false,
+  "java_version": "openjdk version \"17.0.21\" 2026-10-20\nOpenJDK Runtime Environment Temurin-17.0.21+9 (build 17.0.21+9)\nOpenJDK 64-Bit Server VM Temurin-17.0.21+9 (build 17.0.21+9, mixed mode, sharing)\n",
+  "max_length_selection_rule": "128 if train P99<=128 and train truncation@128<=1%; otherwise 256",
+  "model": "vinai/phobert-base",
+  "model_revision": "01daacda68afe13d83023d16ec647239e344a1e6",
+  "modeling_runtime": {
+    "packages": {
+      "PyYAML": "6.0.3",
+      "certifi": "2026.10.23",
+      "charset-normalizer": "3.5.2",
+      "filelock": "4.2.4",
+      "fsspec": "2026.9.0",
+      "hf-xet": "1.7.0",
+      "huggingface_hub": "0.36.2",
+      "idna": "3.20",
+      "numpy": "2.5.4",
+      "packaging": "26.3",
+      "regex": "2026.9.29",
+      "requests": "2.34.2",
+      "safetensors": "0.8.0",
+      "tokenizers": "0.22.2",
+      "tqdm": "4.70.1",
+      "transformers": "4.57.1",
+      "typing_extensions": "4.16.0",
+      "urllib3": "2.8.0"
+    },
+    "python": "3.13.9",
+    "unicode": "15.1.0"
+  },
+  "num_added_special_tokens": 2,
+  "registered_max_length": 128,
+  "scope": "Local tokenizer-only; all train reviews retained including NAN; no model weights, no training, no validation/test token-based selection.",
+  "segmented_unit_lengths": {
+    "max": 208,
+    "mean": 21.087050304290887,
+    "min": 1,
+    "p50": 18.0,
+    "p90": 38.0,
+    "p95": 48.0,
+    "p99": 68.0,
+    "reviews": 12981,
+    "truncation": {
+      "128": {
+        "rate": 0.00023110700254217703,
+        "reviews": 3
+      },
+      "256": {
+        "rate": 0.0,
+        "reviews": 0
+      }
+    }
+  },
+  "segmenter": "VnCoreNLP-1.2 / RDRSegmenter wseg-only",
+  "segmenter_revision": "62bbc58fe5d113c898eae112656be97dcf50b3a0",
+  "smoke_examples": [
+    {
+      "ids": [
+        0,
+        168,
+        12687,
+        5814,
+        52,
+        322,
+        35,
+        850,
+        1426,
+        120,
+        5,
+        2
+      ],
+      "raw": "Ông Nguyễn Khắc Chúc đang làm việc tại Đại học Quốc gia Hà Nội.",
+      "segmented": "Ông Nguyễn_Khắc_Chúc đang làm_việc tại Đại_học Quốc_gia Hà_Nội .",
+      "tokens": [
+        "<s>",
+        "Ông",
+        "Nguyễn_Khắc_@@",
+        "Chúc",
+        "đang",
+        "làm_việc",
+        "tại",
+        "Đại_học",
+        "Quốc_gia",
+        "Hà_Nội",
+        ".",
+        "</s>"
+      ]
+    },
+    {
+      "ids": [
+        0,
+        6957,
+        258,
+        381,
+        381,
+        381,
+        61380,
+        3421,
+        8777,
+        9600,
+        204,
+        27,
+        20,
+        3,
+        5516,
+        543,
+        5,
+        2
+      ],
+      "raw": "Màu đẹp!!! Nhưng son KHÔ quá :( 😊 ko thích.",
+      "segmented": "Màu đẹp ! ! ! Nhưng_son KHÔ quá : ( 😊 ko thích .",
+      "tokens": [
+        "<s>",
+        "Màu",
+        "đẹp",
+        "!",
+        "!",
+        "!",
+        "Nhưng_@@",
+        "son",
+        "KH@@",
+        "Ô",
+        "quá",
+        ":",
+        "(",
+        "<unk>",
+        "ko",
+        "thích",
+        ".",
+        "</s>"
+      ]
+    },
+    {
+      "ids": [
+        0,
+        2066,
+        175,
+        77,
+        17,
+        28123,
+        3421,
+        10,
+        700,
+        2398,
+        17,
+        5,
+        2
+      ],
+      "raw": "Chưa dùng nên không biết son có lâu trôi không.",
+      "segmented": "Chưa dùng nên không biết_son có lâu trôi không .",
+      "tokens": [
+        "<s>",
+        "Chưa",
+        "dùng",
+        "nên",
+        "không",
+        "biết_@@",
+        "son",
+        "có",
+        "lâu",
+        "trôi",
+        "không",
+        ".",
+        "</s>"
+      ]
+    },
+    {
+      "ids": [
+        0,
+        1086,
+        6327,
+        2
+      ],
+      "raw": "NAN",
+      "segmented": "NAN",
+      "tokens": [
+        "<s>",
+        "N@@",
+        "AN",
+        "</s>"
+      ]
+    },
+    {
+      "ids": [
+        0,
+        381,
+        381,
+        381,
+        2
+      ],
+      "raw": "!!!",
+      "segmented": "! ! !",
+      "tokens": [
+        "<s>",
+        "!",
+        "!",
+        "!",
+        "</s>"
+      ]
+    },
+    {
+      "ids": [
+        0,
+        3,
+        3,
+        2
+      ],
+      "raw": "👍🏻",
+      "segmented": "👍🏻",
+      "tokens": [
+        "<s>",
+        "<unk>",
+        "<unk>",
+        "</s>"
+      ]
+    }
+  ],
+  "source_split_used_for_length_selection": "train",
+  "special_token_ids": {
+    "bos": 0,
+    "eos": 2,
+    "mask": 64000,
+    "pad": 1,
+    "unk": 3
+  },
+  "special_tokens_map": {
+    "bos_token": "<s>",
+    "cls_token": "<s>",
+    "eos_token": "</s>",
+    "mask_token": "<mask>",
+    "pad_token": "<pad>",
+    "sep_token": "</s>",
+    "unk_token": "<unk>"
+  },
+  "status": "PASS",
+  "subword_lengths_including_specials": {
+    "max": 301,
+    "mean": 30.634619828980817,
+    "min": 3,
+    "p50": 26.0,
+    "p90": 51.0,
+    "p95": 64.0,
+    "p99": 92.0,
+    "reviews": 12981,
+    "truncation": {
+      "128": {
+        "rate": 0.0031584623680764195,
+        "reviews": 41
+      },
+      "256": {
+        "rate": 0.00015407133502811802,
+        "reviews": 2
+      }
+    }
+  },
+  "tokenizer_class": "PhobertTokenizer",
+  "total_bare_subwords": 371706,
+  "train_reviews": 12981,
+  "train_sha256": "19449cceea317269304464ef7c6c72d5dc70548c6006686d1506e1880bfb9976",
+  "training_started": false,
+  "unknown_subword_count": 15844,
+  "unknown_subword_rate": 0.04262508541696933
+}

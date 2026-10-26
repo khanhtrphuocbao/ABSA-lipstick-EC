@@ -1,0 +1,24 @@
+{
+  "reproducibility_gate": "PASS",
+  "gate_python": "3.15.1",
+  "gate_unicode": "17.0.0",
+  "original_v1_lock_unchanged": true,
+  "metric_formula": "unchanged v1; ceiling is reporting interpretation only",
+  "unit_tests": {
+    "count": 16,
+    "status": "PASS",
+    "evidence": "reproducibility_gate_v1.json"
+  },
+  "tokenizer_audit": "PASS on all 12981 train rows; second run matched existing summary and token-cache bytes",
+  "model_registration": "PASS; six candidates x three seeds; artifact hashes verified after tokenizer rerun",
+  "registration_lock_sha256": "7279166cb41c3676e835e27bfd3bc53e9330889145fc73a4e91b96fea16a83e4",
+  "modeling_python": "3.13.9",
+  "modeling_unicode": "15.1.0",
+  "training_environment": "dependency graph resolved/hash-locked; full GPU runtime not installed/verified",
+  "pretrained_weights_downloaded": false,
+  "model_training_started": false,
+  "remaining_before_fit": [
+    "trainer implementation and source run manifest",
+    "training package imports and target CUDA hardware validation"
+  ]
+}

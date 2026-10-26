@@ -1,0 +1,21 @@
+{
+  "artifacts": {
+    "protocols/data_audit_manifest.csv": "166b8783d67eace9afa9deacb38e25f80bd6f6af1aa2c9eacabb9373b18bd118",
+    "protocols/data_protocol_v1.md": "a0a4e55e3a8b9993f531abaa5166e20e655f7b6c2566680d44f66dbf7681d792",
+    "protocols/evaluation_protocol_v1.yaml": "f3145ee7fb9f99c43c273496d656d881f62d8411c9b97257de8ef695c52c25a4",
+    "reports/protocol_freeze/NAN_normalization_audit_v1.md": "881d8f9fabb33b178136ed74c1d719f87b8869130f3c07835a0e444dc4c962c9",
+    "reports/protocol_freeze/audit_summary_v1.json": "a1fb14c3ad3f9221f2cee00f9c55275ceac674a0e51e5184298dd365ff2bbd72",
+    "src/absa_protocol.py": "768d0714e4017f0e4d9de0b543ba49de9ce3cfd63e9a81a1c2a464fef2c08484",
+    "src/evaluate_predictions.py": "5b422709dc153e579d72af973121b13f0b357ff5e80bd8b5e880ce55601b19d0",
+    "src/preflight_validation.py": "ebbac819d29342dc97756b541ec5b29bdec5297cfdf97b7bdeedf78e2b8b38f5",
+    "tests/test_preflight.py": "8a14b4d86ef277183bf61496f823cbc7279c73d9dbbc3d4ecf710a0587ed4b3f",
+    "tests/test_protocol.py": "75e9f5eb7fbcdd86b9f8489e69099fc45cb0a4403a0b1b5bc13e73ad1cd37e1e"
+  },
+  "notebook_evidence": {
+    "src/eda.ipynb": "3305fb6cbcb2fee3ed73ee93ea49c7c973308e9e80288a6f9d2e86bb04ab44c7",
+    "src/eda_nlp.ipynb": "5e21d2ddac85bd646bf9683bcbc3fd9cc006c916ce05eac1aaf6b94c49bdd67f"
+  },
+  "protocol_id": "absa_data_evaluation_v1",
+  "python": "3.15.1",
+  "unicode_version": "17.0.0"
+}

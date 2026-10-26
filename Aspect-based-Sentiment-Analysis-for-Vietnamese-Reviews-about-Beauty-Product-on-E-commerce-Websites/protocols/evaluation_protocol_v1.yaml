@@ -1,0 +1,78 @@
+{
+  "protocol_id": "absa_data_evaluation_v1",
+  "dataset_version": "original_shopee_absa_v1",
+  "format_note": "JSON syntax is valid YAML 1.2; parsed with the Python standard library for a dependency-free preflight.",
+  "source_files": {
+    "full": {"path": "data/full_data.csv", "rows": 16227, "sha256": "3bda8deecc84d94fff526ad092cadc1dc4a4487e6d1a8c54871e53da95ec780e"},
+    "train": {"path": "data/data_train.csv", "rows": 12981, "sha256": "19449cceea317269304464ef7c6c72d5dc70548c6006686d1506e1880bfb9976"},
+    "val": {"path": "data/data_val.csv", "rows": 1623, "sha256": "7bbc93fad8db9c78a83f75800119cad65bf65b8f0241c36228d7cbe13d1535b3"},
+    "test": {"path": "data/data_test.csv", "rows": 1623, "sha256": "90d1bf0b64105c89346f60d974c5c72c0208c70458c40d5b089ac48486d43d08"}
+  },
+  "targets": {
+    "aspect_detection_labels": ["stayingpower", "texture", "smell", "price", "others", "colour", "shipping", "packing"],
+    "core_aspects": ["stayingpower", "texture", "smell", "price", "colour", "shipping", "packing"],
+    "sentiments": ["positive", "neutral", "negative"],
+    "joint_core_labels": ["stayingpower:positive", "stayingpower:neutral", "stayingpower:negative", "texture:positive", "texture:neutral", "texture:negative", "smell:positive", "smell:neutral", "smell:negative", "price:positive", "price:neutral", "price:negative", "colour:positive", "colour:neutral", "colour:negative", "shipping:positive", "shipping:neutral", "shipping:negative", "packing:positive", "packing:neutral", "packing:negative"],
+    "blank": "aspect not annotated; never neutral",
+    "label_normalization": "strict identity; reject noncanonical spelling/case/whitespace",
+    "others_mutually_exclusive_with_core": false,
+    "joint_decoding": "predicted aspect gate plus exactly one conditional sentiment per present core aspect; no OTHERS joint pair"
+  },
+  "audit": {
+    "L0": "raw CSV-parsed text identity; no Unicode or whitespace changes",
+    "L1": "Python lower, strip, collapse Unicode whitespace; primary contamination report",
+    "L2": "NFC, lower, regex [^\\w\\s] replaced with spaces, collapse [\\s_]+; diagnostic candidates only",
+    "group_empty_keys": true,
+    "overlap_empty_keys": false,
+    "empty_key_note": "Count L2 empty-key collisions in duplicate statistics to reproduce eda_nlp; exclude them from overlap and nonoverlap filtering, expose flag separately.",
+    "L3": "incomplete_candidate_screening; previous bounded trigram/SequenceMatcher screen is not rerun or certified exhaustive",
+    "placeholder_casefold_trim_tokens": ["<na>", "n/a", "na", "nan", "nil", "none", "null"],
+    "placeholder_provenance": "unresolved; literal text confirmed, origin unverified",
+    "benchmark_placeholder_policy": "retain every official row",
+    "expected_full_duplicate_text_extra": {"L0": 257, "L1": 274, "L2": 338},
+    "expected_literal_NAN": {"full": 105, "train": 84, "val": 13, "test": 8}
+  },
+  "evaluation": {
+    "primary": "joint.macro_f1",
+    "unit": "review x 21 fixed core aspect-sentiment pairs",
+    "fixed_labels": true,
+    "f1_zero_division": 0,
+    "per_class_precision_no_predictions": null,
+    "per_class_recall_no_gold_support": null,
+    "macro_precision_recall_undefined_contribution": 0,
+    "observed_support_macro": "secondary; only labels with gold support >0; all absent => null",
+    "empty_subset": "status empty_subset, aggregate scores null; never a zero-performance claim",
+    "aspect_detection": "8 fixed binary labels; Macro/Micro/Weighted PRF and per-aspect counts",
+    "conditional": "gold-present examples per core aspect, all 3 sentiments fixed; mean of 7 aspect macro-F1 with empty aspect contribution 0 and unevaluable aspect list",
+    "joint_secondary": ["micro", "weighted", "macro precision/recall", "joint_per_aspect", "joint_pooled_per_sentiment", "negative_complaints", "per-label TP FP FN support"],
+    "others": "binary detection; not a core sentiment",
+    "test_subsets": ["original_test", "test_nonoverlap_l1", "test_nonoverlap_l2", "test_without_placeholder", "test_placeholder_only"],
+    "overlap_reference": ["train", "val"],
+    "diagnostics_replace_original_test": false,
+    "paper_comparison": "original data/split preserved; these explicitly defined metrics do not claim numerical equivalence to paper metrics"
+  },
+  "selection": {
+    "fit_statistics": "train only: vocabulary IDF class weights sampling and tokenizer length choices",
+    "choose_on": "official val joint.macro_f1 only",
+    "tie_break": "higher val joint micro-F1, then lower candidate id registered before fitting",
+    "threshold": "per model one global aspect threshold chosen from a model-specific registered grid on val primary; no per-rare-class tuning; conditional argmax ties use sentiment order",
+    "validation_zero_support": "PRICE-negative recall unevaluable; no test-based compensation",
+    "train_only_grouped_cv": "disabled in v1; any use requires a preregistered extension before experiments",
+    "seeds": [42, 2026, 3407],
+    "compare": "choose configuration by mean val primary across these seeds; report all seeds, not best seed",
+    "final_test": "one locked evaluation round for all preregistered models/seeds/checkpoints and fixed diagnostics; no retuning from test",
+    "final_run_required": ["code revision and dirty patch hash", "dataset and protocol lock hashes", "candidate grid and budget", "exact model input transform", "tokenizer and segmenter versions and revisions", "checkpoint hashes", "package versions and hardware", "selected thresholds and seeds"],
+    "sensitivity": {
+      "evaluation_filter": "same checkpoint evaluated on original and without-placeholder subsets",
+      "training_ablation": "separate run excluding placeholder candidates from train only; same frozen evaluation subsets and declared validation selection; not main benchmark"
+    }
+  },
+  "model_preprocessing": {
+    "audit_keys_are_model_features": false,
+    "tfidf": "baseline input NFC + whitespace cleanup; case/lowercase/word/char ngrams exact settings registered in experiment config; fit on train",
+    "bigru_conv1d": "baseline input NFC + whitespace cleanup; tokenizer/vocabulary train-only; preserve negation; segmentation and punctuation rules registered before fit",
+    "phobert": "NFC + whitespace cleanup + Vietnamese word segmentation before PhoBERT tokenizer; pin segmenter/tokenizer/model revision; preserve case/punctuation per tokenizer; tokenizer-only audit pending",
+    "phobert_tokenizer_audit_required": ["word segmentation provenance", "train subword P95/P99 with special tokens", "truncation at 128/256 subject to model limit", "special token ids/count and segmentation examples"],
+    "model_training_started": false
+  }
+}

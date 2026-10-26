@@ -1,0 +1,417 @@
+{
+  "conflicts": {
+    "L0": {
+      "keys": 6,
+      "polarity_conflict_keys": 0,
+      "rows": 58
+    },
+    "L1": {
+      "keys": 8,
+      "polarity_conflict_keys": 0,
+      "rows": 69
+    },
+    "L2": {
+      "keys": 7,
+      "polarity_conflict_keys": 0,
+      "rows": 91
+    }
+  },
+  "dataset_version": "original_shopee_absa_v1",
+  "diagnostic_subsets": {
+    "original_test": {
+      "reviews": 1623,
+      "support_21": {
+        "colour:negative": 54,
+        "colour:neutral": 51,
+        "colour:positive": 622,
+        "packing:negative": 10,
+        "packing:neutral": 2,
+        "packing:positive": 282,
+        "price:negative": 6,
+        "price:neutral": 1,
+        "price:positive": 321,
+        "shipping:negative": 174,
+        "shipping:neutral": 26,
+        "shipping:positive": 334,
+        "smell:negative": 48,
+        "smell:neutral": 16,
+        "smell:positive": 252,
+        "stayingpower:negative": 96,
+        "stayingpower:neutral": 40,
+        "stayingpower:positive": 141,
+        "texture:negative": 83,
+        "texture:neutral": 64,
+        "texture:positive": 346
+      }
+    },
+    "test_nonoverlap_l1": {
+      "reviews": 1592,
+      "support_21": {
+        "colour:negative": 54,
+        "colour:neutral": 51,
+        "colour:positive": 621,
+        "packing:negative": 10,
+        "packing:neutral": 2,
+        "packing:positive": 273,
+        "price:negative": 6,
+        "price:neutral": 0,
+        "price:positive": 318,
+        "shipping:negative": 173,
+        "shipping:neutral": 26,
+        "shipping:positive": 330,
+        "smell:negative": 48,
+        "smell:neutral": 16,
+        "smell:positive": 252,
+        "stayingpower:negative": 96,
+        "stayingpower:neutral": 40,
+        "stayingpower:positive": 141,
+        "texture:negative": 83,
+        "texture:neutral": 64,
+        "texture:positive": 345
+      }
+    },
+    "test_nonoverlap_l2": {
+      "reviews": 1585,
+      "support_21": {
+        "colour:negative": 54,
+        "colour:neutral": 51,
+        "colour:positive": 621,
+        "packing:negative": 10,
+        "packing:neutral": 2,
+        "packing:positive": 271,
+        "price:negative": 6,
+        "price:neutral": 0,
+        "price:positive": 318,
+        "shipping:negative": 173,
+        "shipping:neutral": 26,
+        "shipping:positive": 330,
+        "smell:negative": 48,
+        "smell:neutral": 16,
+        "smell:positive": 252,
+        "stayingpower:negative": 96,
+        "stayingpower:neutral": 40,
+        "stayingpower:positive": 141,
+        "texture:negative": 83,
+        "texture:neutral": 64,
+        "texture:positive": 345
+      }
+    },
+    "test_placeholder_only": {
+      "reviews": 8,
+      "support_21": {
+        "colour:negative": 0,
+        "colour:neutral": 0,
+        "colour:positive": 0,
+        "packing:negative": 0,
+        "packing:neutral": 0,
+        "packing:positive": 0,
+        "price:negative": 0,
+        "price:neutral": 0,
+        "price:positive": 0,
+        "shipping:negative": 0,
+        "shipping:neutral": 0,
+        "shipping:positive": 0,
+        "smell:negative": 0,
+        "smell:neutral": 0,
+        "smell:positive": 0,
+        "stayingpower:negative": 0,
+        "stayingpower:neutral": 0,
+        "stayingpower:positive": 0,
+        "texture:negative": 0,
+        "texture:neutral": 0,
+        "texture:positive": 0
+      }
+    },
+    "test_without_placeholder": {
+      "reviews": 1615,
+      "support_21": {
+        "colour:negative": 54,
+        "colour:neutral": 51,
+        "colour:positive": 622,
+        "packing:negative": 10,
+        "packing:neutral": 2,
+        "packing:positive": 282,
+        "price:negative": 6,
+        "price:neutral": 1,
+        "price:positive": 321,
+        "shipping:negative": 174,
+        "shipping:neutral": 26,
+        "shipping:positive": 334,
+        "smell:negative": 48,
+        "smell:neutral": 16,
+        "smell:positive": 252,
+        "stayingpower:negative": 96,
+        "stayingpower:neutral": 40,
+        "stayingpower:positive": 141,
+        "texture:negative": 83,
+        "texture:neutral": 64,
+        "texture:positive": 346
+      }
+    }
+  },
+  "excluding_literal_NAN": {
+    "full": {
+      "char_p50": 81.0,
+      "char_p95": 224.0,
+      "duplicate_row_extra": 147,
+      "duplicate_text_extra": {
+        "L0": 153,
+        "L1": 170,
+        "L2": 234
+      },
+      "multi_aspect_count": 9646,
+      "multi_aspect_rate": 0.5983128644088823,
+      "others_count": 2767,
+      "reviews": 16122,
+      "word_mean": 21.317454410122814,
+      "word_p50": 18.0,
+      "word_p95": 50.0
+    },
+    "test": {
+      "char_p50": 81.0,
+      "char_p95": 235.29999999999995,
+      "duplicate_row_extra": 8,
+      "duplicate_text_extra": {
+        "L0": 8,
+        "L1": 8,
+        "L2": 13
+      },
+      "multi_aspect_count": 960,
+      "multi_aspect_rate": 0.5944272445820433,
+      "others_count": 303,
+      "reviews": 1615,
+      "word_mean": 21.4953560371517,
+      "word_p50": 18.0,
+      "word_p95": 53.0
+    },
+    "train": {
+      "char_p50": 81.0,
+      "char_p95": 222.0,
+      "duplicate_row_extra": 97,
+      "duplicate_text_extra": {
+        "L0": 101,
+        "L1": 116,
+        "L2": 160
+      },
+      "multi_aspect_count": 7736,
+      "multi_aspect_rate": 0.5998294176940374,
+      "others_count": 2207,
+      "reviews": 12897,
+      "word_mean": 21.309529347910367,
+      "word_p50": 18.0,
+      "word_p95": 50.0
+    },
+    "val": {
+      "char_p50": 81.0,
+      "char_p95": 215.0999999999999,
+      "duplicate_row_extra": 6,
+      "duplicate_text_extra": {
+        "L0": 10,
+        "L1": 10,
+        "L2": 17
+      },
+      "multi_aspect_count": 950,
+      "multi_aspect_rate": 0.5900621118012422,
+      "others_count": 257,
+      "reviews": 1610,
+      "word_mean": 21.20248447204969,
+      "word_p50": 18.0,
+      "word_p95": 48.0
+    }
+  },
+  "l2_empty_keys": {
+    "full": 31,
+    "test": 3,
+    "train": 25,
+    "val": 3
+  },
+  "literal_NAN_raw_csv_proof": {
+    "full": {
+      "exact_text_and_only_others_neutral": true,
+      "raw_records_reparsed": true,
+      "records_checked": 105
+    },
+    "test": {
+      "exact_text_and_only_others_neutral": true,
+      "raw_records_reparsed": true,
+      "records_checked": 8
+    },
+    "train": {
+      "exact_text_and_only_others_neutral": true,
+      "raw_records_reparsed": true,
+      "records_checked": 84
+    },
+    "val": {
+      "exact_text_and_only_others_neutral": true,
+      "raw_records_reparsed": true,
+      "records_checked": 13
+    }
+  },
+  "original": {
+    "full": {
+      "char_p50": 81.0,
+      "char_p95": 223.0,
+      "duplicate_row_extra": 251,
+      "duplicate_text_extra": {
+        "L0": 257,
+        "L1": 274,
+        "L2": 338
+      },
+      "multi_aspect_count": 9646,
+      "multi_aspect_rate": 0.5944413631601652,
+      "others_count": 2872,
+      "reviews": 16227,
+      "word_mean": 21.1859863190978,
+      "word_p50": 18.0,
+      "word_p95": 50.0
+    },
+    "test": {
+      "char_p50": 81.0,
+      "char_p95": 235.0,
+      "duplicate_row_extra": 15,
+      "duplicate_text_extra": {
+        "L0": 15,
+        "L1": 15,
+        "L2": 20
+      },
+      "multi_aspect_count": 960,
+      "multi_aspect_rate": 0.5914972273567468,
+      "others_count": 311,
+      "reviews": 1623,
+      "word_mean": 21.394331484904498,
+      "word_p50": 18.0,
+      "word_p95": 53.0
+    },
+    "train": {
+      "char_p50": 81.0,
+      "char_p95": 222.0,
+      "duplicate_row_extra": 180,
+      "duplicate_text_extra": {
+        "L0": 184,
+        "L1": 199,
+        "L2": 243
+      },
+      "multi_aspect_count": 7736,
+      "multi_aspect_rate": 0.5959479238887605,
+      "others_count": 2291,
+      "reviews": 12981,
+      "word_mean": 21.178106463292504,
+      "word_p50": 18.0,
+      "word_p95": 50.0
+    },
+    "val": {
+      "char_p50": 80.0,
+      "char_p95": 213.6999999999996,
+      "duplicate_row_extra": 18,
+      "duplicate_text_extra": {
+        "L0": 22,
+        "L1": 22,
+        "L2": 29
+      },
+      "multi_aspect_count": 950,
+      "multi_aspect_rate": 0.585335797905114,
+      "others_count": 270,
+      "reviews": 1623,
+      "word_mean": 21.040665434380777,
+      "word_p50": 18.0,
+      "word_p95": 48.0
+    }
+  },
+  "overlap": [
+    {
+      "cross_pairs": 1265,
+      "left": "train",
+      "level": "L0",
+      "right": "val",
+      "rows_left": 148,
+      "rows_right": 38,
+      "shared_keys": 18
+    },
+    {
+      "cross_pairs": 795,
+      "left": "train",
+      "level": "L0",
+      "right": "test",
+      "rows_left": 148,
+      "rows_right": 30,
+      "shared_keys": 18
+    },
+    {
+      "cross_pairs": 128,
+      "left": "val",
+      "level": "L0",
+      "right": "test",
+      "rows_left": 24,
+      "rows_right": 15,
+      "shared_keys": 5
+    },
+    {
+      "cross_pairs": 1273,
+      "left": "train",
+      "level": "L1",
+      "right": "val",
+      "rows_left": 156,
+      "rows_right": 39,
+      "shared_keys": 19
+    },
+    {
+      "cross_pairs": 802,
+      "left": "train",
+      "level": "L1",
+      "right": "test",
+      "rows_left": 155,
+      "rows_right": 31,
+      "shared_keys": 19
+    },
+    {
+      "cross_pairs": 129,
+      "left": "val",
+      "level": "L1",
+      "right": "test",
+      "rows_left": 25,
+      "rows_right": 16,
+      "shared_keys": 6
+    },
+    {
+      "cross_pairs": 1451,
+      "left": "train",
+      "level": "L2",
+      "right": "val",
+      "rows_left": 179,
+      "rows_right": 48,
+      "shared_keys": 22
+    },
+    {
+      "cross_pairs": 910,
+      "left": "train",
+      "level": "L2",
+      "right": "test",
+      "rows_left": 173,
+      "rows_right": 37,
+      "shared_keys": 21
+    },
+    {
+      "cross_pairs": 161,
+      "left": "val",
+      "level": "L2",
+      "right": "test",
+      "rows_left": 33,
+      "rows_right": 21,
+      "shared_keys": 8
+    }
+  ],
+  "placeholder_variants": {
+    "full": {
+      "NAN": 105
+    },
+    "test": {
+      "NAN": 8
+    },
+    "train": {
+      "NAN": 84
+    },
+    "val": {
+      "NAN": 13
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "original_test": {
+    "fixed_labels": 21,
+    "metric_unchanged": true,
+    "not_a_model_score": true,
+    "reviews": 1623,
+    "support_only_upper_bound": 1.0,
+    "supported_labels": 21,
+    "zero_support_labels": []
+  },
+  "test_nonoverlap_l1": {
+    "fixed_labels": 21,
+    "metric_unchanged": true,
+    "not_a_model_score": true,
+    "reviews": 1592,
+    "support_only_upper_bound": 0.9523809523809523,
+    "supported_labels": 20,
+    "zero_support_labels": [
+      "price:neutral"
+    ]
+  },
+  "test_nonoverlap_l2": {
+    "fixed_labels": 21,
+    "metric_unchanged": true,
+    "not_a_model_score": true,
+    "reviews": 1585,
+    "support_only_upper_bound": 0.9523809523809523,
+    "supported_labels": 20,
+    "zero_support_labels": [
+      "price:neutral"
+    ]
+  },
+  "test_placeholder_only": {
+    "fixed_labels": 21,
+    "metric_unchanged": true,
+    "not_a_model_score": true,
+    "reviews": 8,
+    "support_only_upper_bound": 0.0,
+    "supported_labels": 0,
+    "zero_support_labels": [
+      "colour:negative",
+      "colour:neutral",
+      "colour:positive",
+      "packing:negative",
+      "packing:neutral",
+      "packing:positive",
+      "price:negative",
+      "price:neutral",
+      "price:positive",
+      "shipping:negative",
+      "shipping:neutral",
+      "shipping:positive",
+      "smell:negative",
+      "smell:neutral",
+      "smell:positive",
+      "stayingpower:negative",
+      "stayingpower:neutral",
+      "stayingpower:positive",
+      "texture:negative",
+      "texture:neutral",
+      "texture:positive"
+    ]
+  },
+  "test_without_placeholder": {
+    "fixed_labels": 21,
+    "metric_unchanged": true,
+    "not_a_model_score": true,
+    "reviews": 1615,
+    "support_only_upper_bound": 1.0,
+    "supported_labels": 21,
+    "zero_support_labels": []
+  },
+  "train": {
+    "fixed_labels": 21,
+    "metric_unchanged": true,
+    "not_a_model_score": true,
+    "reviews": 12981,
+    "support_only_upper_bound": 1.0,
+    "supported_labels": 21,
+    "zero_support_labels": []
+  },
+  "val": {
+    "fixed_labels": 21,
+    "metric_unchanged": true,
+    "not_a_model_score": true,
+    "reviews": 1623,
+    "support_only_upper_bound": 0.9523809523809523,
+    "supported_labels": 20,
+    "zero_support_labels": [
+      "price:negative"
+    ]
+  }
+}

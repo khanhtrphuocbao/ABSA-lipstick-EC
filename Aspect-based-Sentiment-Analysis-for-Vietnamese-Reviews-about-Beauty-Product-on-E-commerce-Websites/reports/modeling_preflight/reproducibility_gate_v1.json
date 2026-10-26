@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "python": "3.15.1",
+  "unicode": "17.0.0",
+  "freeze_lock_sha256_before": "16e9b76b6a71530d08704cadc2d1ddeddf54ca57615c35f8e650ccc57ac86ee8",
+  "freeze_lock_sha256_after": "16e9b76b6a71530d08704cadc2d1ddeddf54ca57615c35f8e650ccc57ac86ee8",
+  "source_and_frozen_artifact_checksums_unchanged": true,
+  "commands": [
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "src/preflight_validation.py",
+        "--check"
+      ],
+      "returncode": 0,
+      "stdout": "PASS source SHA-256, schemas, 16,227 rows and official 12,981/1,623/1,623 splits\nPASS full/split multisets; 7 core / 8 aspect / 21 joint labels; canonical labels\nPASS manifest covers all 16,227 split rows and bijectively maps all full records; raw CSV provenance\nPASS deterministic L0/L1/L2, conflict/overlap/placeholder flags, subsets and audit summaries\nPASS protocol/evaluator/artifact fingerprints and Unicode runtime\nDATA + EVALUATOR FREEZE READY; model-specific tokenizer audit / run registration still required\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/opt/homebrew/opt/python@3.15/bin/python3.15",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "test_ceiling_is_interpretation_of_existing_fixed_label_metric (test_modeling_preflight.ModelingPreflightTests.test_ceiling_is_interpretation_of_existing_fixed_label_metric) ... ok\ntest_lengths_include_specials_and_strictly_greater_than_limit (test_modeling_preflight.ModelingPreflightTests.test_lengths_include_specials_and_strictly_greater_than_limit) ... ok\ntest_model_preparation_retains_case_punctuation_emoji_negation (test_modeling_preflight.ModelingPreflightTests.test_model_preparation_retains_case_punctuation_emoji_negation) ... ok\ntest_artifact_tampering_fails_instead_of_rebuilding (test_preflight.PreflightTests.test_artifact_tampering_fails_instead_of_rebuilding) ... ok\ntest_predictions_are_aligned_by_source_id_not_input_order (test_preflight.PreflightTests.test_predictions_are_aligned_by_source_id_not_input_order) ... ok\ntest_source_tampering_rejected_by_fingerprint (test_preflight.PreflightTests.test_source_tampering_rejected_by_fingerprint) ... ok\ntest_audit_levels_preserve_different_semantics (test_protocol.ProtocolTests.test_audit_levels_preserve_different_semantics) ... ok\ntest_empty_subset_is_not_a_zero_performance_claim (test_protocol.ProtocolTests.test_empty_subset_is_not_a_zero_performance_claim) ... ok\ntest_fixed_absent_labels_are_not_silently_omitted (test_protocol.ProtocolTests.test_fixed_absent_labels_are_not_silently_omitted) ... ok\ntest_gold_positive_but_no_prediction (test_protocol.ProtocolTests.test_gold_positive_but_no_prediction) ... ok\ntest_micro_weighted_and_observed_support_hand_calculation (test_protocol.ProtocolTests.test_micro_weighted_and_observed_support_hand_calculation) ... ok\ntest_others_and_shipping_can_coexist (test_protocol.ProtocolTests.test_others_and_shipping_can_coexist) ... ok\ntest_placeholder_is_candidate_not_missing_or_neutral (test_protocol.ProtocolTests.test_placeholder_is_candidate_not_missing_or_neutral) ... ok\ntest_reject_unknown_labels_missing_outputs_and_length_mismatch (test_protocol.ProtocolTests.test_reject_unknown_labels_missing_outputs_and_length_mismatch) ... ok\ntest_wrong_aspect_creates_joint_fp_and_fn (test_protocol.ProtocolTests.test_wrong_aspect_creates_joint_fp_and_fn) ... ok\ntest_wrong_sentiment_and_no_aspect_are_different_failures (test_protocol.ProtocolTests.test_wrong_sentiment_and_no_aspect_are_different_failures) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 0.004s\n\nOK\n"
+    }
+  ]
+}
