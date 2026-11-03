@@ -1,0 +1,2 @@
+# Separate reporting-only environment; never install into the frozen modeling environment.
+matplotlib==3.10.6
